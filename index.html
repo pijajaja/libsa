@@ -470,13 +470,14 @@
                         <h2 className="text-3xl font-extrabold mb-8">Login Admin</h2>
                         <form onSubmit={handleLogin}>
                             <input 
-                                type="password" 
-                                value={pin} 
-                                onChange={e => {setPin(e.target.value); setError(false);}} 
-                                placeholder="Masukkan PIN Admin" 
-                                className="w-full text-center tracking-[0.5em] text-2xl p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-darkbg outline-none focus:border-primary transition mb-6 font-mono"
-                                autoFocus
-                            />
+    type="password" 
+    value={pin} 
+    onChange={e => {setPin(e.target.value); setError(false);}} 
+    placeholder="Masukkan PIN Admin" 
+    className="w-full text-center text-lg p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-darkbg outline-none focus:border-primary transition mb-6"
+    autoFocus
+/>
+
                             {error && <p className="text-primary font-bold text-sm mb-4 animate-bounce">PIN tidak valid!</p>}
                             <button type="submit" className="w-full bg-primary hover:bg-red-700 text-white font-bold py-4 rounded-xl transition shadow-lg hover:shadow-red-500/40 text-lg">
                                 Masuk Sistem
