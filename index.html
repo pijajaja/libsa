@@ -63,7 +63,7 @@
         import React, { useState, useEffect } from "react";
         import { createRoot } from "react-dom/client";
         import { initializeApp } from "firebase/app";
-        import { getFirestore, collection, addDoc, updateDoc, doc, query, where, onSnapshot, serverTimestamp } from "firebase/firestore";
+        import { getFirestore, collection, addDoc, updateDoc, doc, query, where, onSnapshot, serverTimestamp, deleteDoc } from "firebase/firestore";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
         import { getAnalytics } from "firebase/analytics";
 
@@ -515,6 +515,18 @@
                 }
             };
 
+            // FUNGSI BARU: Hapus Karya Permanen
+            const handleDelete = async (id) => {
+                if(confirm("PERINGATAN! Apakah Anda yakin ingin menghapus karya ini secara permanen? Data yang dihapus tidak dapat dikembalikan.")) {
+                    try {
+                        await deleteDoc(doc(db, "karya", id));
+                        alert("Karya berhasil dihapus secara permanen dari database.");
+                    } catch (error) {
+                        alert("Gagal menghapus karya: " + error.message);
+                    }
+                }
+            };
+
             const handleEditSave = async (e) => {
                 e.preventDefault();
                 await updateDoc(doc(db, "karya", editingWork.id), {
@@ -603,11 +615,21 @@
                                             {work.konten}
                                         </div>
                                     </div>
+                                    
+                                    {/* AREA TOMBOL AKSI ADMIN */}
                                     <div className="flex lg:flex-col gap-2 justify-center lg:w-40 shrink-0 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 pt-4 lg:pt-0 lg:pl-6">
                                         <button onClick={() => setEditingWork(work)} className="flex-1 bg-blue-100 text-blue-700 hover:bg-blue-200 py-3 rounded-xl font-bold text-sm transition">Edit Data</button>
+                                        
                                         {tab !== 'terbit' && <button onClick={() => updateStatus(work.id, 'terbit')} className="flex-1 bg-green-100 text-green-700 hover:bg-green-200 py-3 rounded-xl font-bold text-sm transition">Terbitkan</button>}
-                                        {tab !== 'ditolak' && <button onClick={() => updateStatus(work.id, 'ditolak')} className="flex-1 bg-red-100 text-primary hover:bg-red-200 py-3 rounded-xl font-bold text-sm transition">Tolak Karya</button>}
-                                        {tab !== 'menunggu' && <button onClick={() => updateStatus(work.id, 'menunggu')} className="flex-1 bg-orange-100 text-orange-700 hover:bg-orange-200 py-3 rounded-xl font-bold text-sm transition">Kembalikan ke Tinjauan</button>}
+                                        
+                                        {tab !== 'ditolak' && <button onClick={() => updateStatus(work.id, 'ditolak')} className="flex-1 bg-orange-100 text-orange-700 hover:bg-orange-200 py-3 rounded-xl font-bold text-sm transition">Tolak Karya</button>}
+                                        
+                                        {tab !== 'menunggu' && <button onClick={() => updateStatus(work.id, 'menunggu')} className="flex-1 bg-yellow-100 text-yellow-700 hover:bg-yellow-200 py-3 rounded-xl font-bold text-sm transition">Tinjau Ulang</button>}
+                                        
+                                        {/* TOMBOL HAPUS - Khusus untuk tab Terbit (atau bisa juga ditolak) */}
+                                        {(tab === 'terbit' || tab === 'ditolak') && (
+                                            <button onClick={() => handleDelete(work.id)} className="flex-1 bg-red-100 text-primary hover:bg-red-200 py-3 rounded-xl font-bold text-sm transition mt-1 border border-red-200 dark:border-red-900/50">Hapus Permanen</button>
+                                        )}
                                     </div>
                                 </div>
                             ))}
@@ -656,5 +678,6 @@
     </script>
 </body>
 </html>
+
 
 
